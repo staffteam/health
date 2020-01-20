@@ -16,7 +16,7 @@ var config = {
   service: {
     host,
     barcodeSearch:`${host}/drugs/barcodeSearch`,
-    searchCode:`${head}/drugs/searchCode1`,
+    searchCode:`${head}/drugs/searchCode`,
     // 登录地址，用于建立会话
     loginUrl: `${host}/weapp/login`,
     // 测试的请求地址，用于测试会话
