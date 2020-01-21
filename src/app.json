@@ -29,7 +29,8 @@
     "pages/submitInfo/main",
     "pages/store/main",
     "pages/antiFake/main",
-    "pages/brandDetail/main"
+    "pages/brandDetail/main",
+    "pages/projectInfo/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

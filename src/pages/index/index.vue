@@ -211,7 +211,7 @@ export default {
         {
           title: "防偽認證",
           imgUrl: require("../../../static/images/home-btn-1.png"),
-          url: "../antiFake/main"
+          url: "../projectInfo/main"
         },
         {
           title: "優質認證區",
@@ -276,7 +276,7 @@ export default {
           vm.userInfo = data;
           mpvue.setStorageSync("userInfo", data);
           mpvue.request({
-            url: `${this.$api}/member/isSuper`,
+            url: `${vm.$api}/member/isSuper`,
             data: {
               userid: mpvue.getStorageSync("userId")
             },
@@ -427,9 +427,20 @@ export default {
     }
   },
   onShow() {
+    let vm = this;
     let userInfo = mpvue.getStorageSync("userInfo");
     if (userInfo) {
       this.hasUserInfo = true;
+      mpvue.request({
+        url: `${vm.$api}/member/isSuper`,
+        data: {
+          userid: mpvue.getStorageSync("userId")
+        },
+        success: function(res) {
+          var datas = res.data.data;
+          vm.isQRcode = datas;
+        }
+      });
     }
   },
   onPullDownRefresh: function() {

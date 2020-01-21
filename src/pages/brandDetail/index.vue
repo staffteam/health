@@ -1,10 +1,10 @@
 <template>
   <div class="detail">
     <div class="logo">
-      <img :src="detail.logo" mode="aspectFill" />
+      <img :src="detail.LogoUrl" mode="aspectFill" />
     </div>
-    <div class="content wxparse-mains">
-      <wxParse :content="detail.content" />
+    <div class="content wxparse-mains" v-if="detail.ProductorProfile">
+      <wxParse :content="detail.ProductorProfile" />
     </div>
   </div>
 </template>
@@ -16,10 +16,8 @@ export default {
   },
   data() {
     return {
+      pid:"",
       detail: {
-        logo: "/static/images/design.png",
-        content:
-          "<p>這是商檢內容這是商檢內容這是商檢內容這是商檢內容這是商檢內容這是商檢內容</p><p>這是商檢內容這是商檢內容這是商檢內容這是商檢內容這是商檢內容這是商檢內容</p><p>這是商檢內容這是商檢內容這是商檢內容這是商檢內容這是商檢內容這是商檢內容</p>"
       }
     };
   },
@@ -49,11 +47,11 @@ export default {
     getData(arr) {
       var vm = this;
       mpvue.request({
-        url: `${vm.config.service.barcodeSearch}`,
-        method: "POST",
+        url: `${vm.config.service.getProductor}`,
+        method: "GET",
         data: {
           args: {
-            barcode: vm.pid
+            ProductorBrand: vm.pid
           }
         },
         success: function(res) {
@@ -62,10 +60,14 @@ export default {
             vm.detail = res.data.Data;
           } else {
             mpvue.showToast({
-              title: res.data.Message,
-              icon: "none",
-              duration: 2000
+              title: "查詢失敗，請重試",
+              icon: "none"
             });
+            setTimeout(_ => {
+              mpvue.navigateBack({
+                delta: 1
+              });
+            }, 1500);
           }
         },
         fail: function(res) {
@@ -90,6 +92,7 @@ export default {
     height: 200rpx;
     border-radius: 50%;
     box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.1);
+    overflow: hidden;
     img {
       width: 100%;
       height: 100%;

@@ -1,27 +1,15 @@
 <template>
   <div>
-    <div class="qr-info">
-      <div class="t">
-        <h2>大健康百科為該產品提供產品防偽碼檢驗服務</h2>
-        <p>
-          <i class="iconfont icon-sousuo"></i> 當前防偽碼為
-          <span>{{antifakeCode}}</span>
-        </p>
+    <div class="qr-main">
+      <div class="qr-top">
+        <img src="/static/images/qrcode.png" mode="widthFix" alt />
+        <h2>商品掃碼辨真偽</h2>
+        <p>掃描後展示產品詳細信息</p>
       </div>
-      <div class="b">
-        <h2 v-if="info.Count==1">該防偽碼未被查詢過，本次是第1次查詢</h2>
-        <h2 v-if="info.Count!=1">該防偽碼已被查詢{{info.Count}}次</h2>
-        <div class="title">
-          <i class="iconfont icon-mingcheng"></i>
-          <div>
-            <span>產品名稱</span>
-            <p>{{info.Drugs_name}}</p>
-          </div>
-        </div>
-        <div class="btn">
-          <p @click="productDetail">產品詳情</p>
-          <p @click="brandDetail">廠家/品牌信息</p>
-        </div>
+      <div class="qr-btn">
+        <p @click="makeSweep">
+          <i class="iconfont icon-richscan_icon"></i> 扫一扫 辨真伪
+        </p>
       </div>
     </div>
   </div>
@@ -30,9 +18,7 @@
 export default {
   data() {
     return {
-      pid: "",
-      antifakeCode: "",
-      info: {}
+      isQRcode: true
     };
   },
   mounted() {
@@ -46,63 +32,31 @@ export default {
       }
     });
   },
-  onLoad(o) {
-    let vm = this;
-    vm.antifakeCode = "";
-    vm.pid = "";
-    vm.info = {};
-    if (o.q) {
-      mpvue.showLoading({
-        title: "請稍等"
-      });
-      o.q = o.q.split("scancode_time")[0];
-      this.pid = decodeURIComponent(o.q);
-      this.getData(this.pid.split("/"));
-    }
-  },
+  onLoad(o) {},
   methods: {
-    productDetail() {
-      mpvue.navigateTo({
-        url: "../productDetails/main?title=" + this.info.Id
-      });
-    },
-    brandDetail() {
-      mpvue.navigateTo({
-        url: "../brandDetail/main?id=" + this.info.ProductorBrand
-      });
-    },
-    getData(arr) {
+    //扫码查询
+    makeSweep: function(e) {
       var vm = this;
-      vm.antifakeCode = arr[arr.length - 1];
-      vm.pid = arr[arr.length - 1];
-      mpvue.request({
-        url: `${this.config.service.searchCode}`,
-        method: "GET",
-        data: {
-          args: {
-            code: arr[arr.length - 1]
-          }
-        },
-        success: function(res) {
-          console.log("success", res.data.Data);
-          if (res.data.Code == 200) {
-            mpvue.hideLoading();
-            vm.info = res.data.Data;
+      mpvue.scanCode({
+        onlyFromCamera: true,
+        scanType: "barCode",
+        success: res => {
+          console.log("扫码数据为：", res.result);
+          let _code = res.result;
+          var arr = res.result.split("/");
+          if (_code.indexOf("https://old.szyinghe.net/upload/") >= 0) {
+            mpvue.showLoading({
+              title: "請稍等"
+            });
+            mpvue.navigateTo({
+              url: "../antiFake/main?q=" + encodeURIComponent(res.result)
+            });
           } else {
-            mpvue.hideLoading();
             mpvue.showToast({
-              title: "查詢失敗，請重試",
+              title: "二維碼有誤，請更換",
               icon: "none"
             });
-            setTimeout(_ => {
-              mpvue.navigateBack({
-                delta: 1
-              });
-            }, 1500);
           }
-        },
-        fail: function(res) {
-          console.log("fail", res.data);
         }
       });
     }
@@ -110,6 +64,50 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.qr-top {
+  padding-top: 130rpx;
+  text-align: center;
+  img {
+    width: 622rpx;
+    height: 405rpx;
+  }
+  h2 {
+    font-size: 42rpx;
+    font-weight: 600;
+    line-height: 59rpx;
+    margin-top: 58rpx;
+  }
+  p {
+    margin-top: 23rpx;
+    font-size: 30rpx;
+    color: rgba(102, 102, 102, 1);
+    line-height: 40rpx;
+  }
+}
+.qr-btn {
+  width: 372rpx;
+  height: 106rpx;
+  background: rgba(0, 169, 128, 0.2);
+  border-radius: 53rpx;
+  margin: 0 auto;
+  margin-top: 120rpx;
+  padding: 10rpx 11rpx;
+  p {
+    width: 350rpx;
+    height: 88rpx;
+    background: rgba(0, 169, 128, 1);
+    border-radius: 44rpx;
+    color: white;
+    text-align: center;
+    line-height: 88rpx;
+    font-size: 36rpx;
+    i {
+      font-size: 40rpx;
+      display: inline-block;
+      margin-right: 10rpx;
+    }
+  }
+}
 .qr-info {
   background-color: #00a980;
   width: 100%;
