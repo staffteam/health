@@ -457,6 +457,7 @@ export default {
       //点击其他产品刷新数据
       console.log("携带数据为：", e.mp.currentTarget.dataset.id.id);
       this.getdata(e.mp.currentTarget.dataset.id.id);
+      this.atTheTop();
     },
     scClick() {
       // mpvue.showToast({

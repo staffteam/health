@@ -64,18 +64,21 @@ export default {
       success: function(res) {
         if (res.statusCode == 200) {
           vm.activityNavData = [];
+         
           let datas = res.data.data;
           for (let item in datas) {
-            vm.activityNavData.push({ title: item });
+            let _data = [{ title: item }];
+             console.log(datas[item]);
             datas[item].forEach(value => {
-              vm.activityNavData.push({
+              _data.push({
                 month: value + "月",
                 date: `${item}-${value}`
               });
             });
+            vm.activityNavData = [..._data,...vm.activityNavData];
           }
           vm.getList(vm.activityNavData[1].date, 1);
-          console.log(vm.activityNavData);
+         
         } else {
           mpvue.showToast({
             title: "網絡發生異常！",

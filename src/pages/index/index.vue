@@ -28,7 +28,7 @@
         <i class="iconfont icon-lianxikefu"></i>
       </a>
     </div>
-    <div class="scan" v-if="isQRcode">
+    <div class="scan">
       <a href="../qrCode/main">
         <p>
           <i class="iconfont icon-richscan_icon"></i> 掃一掃條形碼
@@ -36,18 +36,8 @@
       </a>
     </div>
     <div class="nav">
-      <ul v-if="isQRcode">
+      <ul>
         <li v-for="(item,index) in [navData[0],navData[1],navData[2],navData[3]]" :key="index">
-          <a :href="item.url">
-            <p>
-              <img :src="item.imgUrl" alt />
-            </p>
-            <h2>{{item.title}}</h2>
-          </a>
-        </li>
-      </ul>
-      <ul v-if="!isQRcode">
-        <li v-for="(item,index) in [navData[1],navData[2],navData[3]]" :key="index">
           <a :href="item.url">
             <p>
               <img :src="item.imgUrl" alt />
@@ -70,7 +60,7 @@
     <div class="banner">
       <swiper
         :autoplay="true"
-        interval="5000"
+        :interval="interval"
         :indicator-dots="false"
         circular="true"
         :current="currentSwiper"
@@ -245,7 +235,8 @@ export default {
         }
       ],
       searchRecords: [],
-      parameter: []
+      parameter: [],
+      interval:5000
     };
   },
   methods: {
@@ -275,16 +266,6 @@ export default {
           vm.hasUserInfo = true;
           vm.userInfo = data;
           mpvue.setStorageSync("userInfo", data);
-          mpvue.request({
-            url: `${vm.$api}/member/isSuper`,
-            data: {
-              userid: mpvue.getStorageSync("userId")
-            },
-            success: function(res) {
-              var datas = res.data.data;
-              vm.isQRcode = datas;
-            }
-          });
         }
       );
     },
@@ -329,10 +310,14 @@ export default {
         url: `${this.$api}/home/banner?navcode=indexbanner`,
         success: function(res) {
           var datas = res.data.data;
+          let ClickAmount = 5000;
+          debugger;
           vm.bannerData = datas.map(value => {
             value.img_url = vm.$imgHost + value.img_url.replace(/\\/g, "/");
+            ClickAmount = value.ClickAmount;
             return value;
           });
+          vm.interval = ClickAmount*1000;
           _i++;
         }
       });
@@ -448,6 +433,9 @@ export default {
   },
   onLoad() {
     this.getLoad();
+  },
+  onShareAppMessage(){
+    
   }
 };
 </script>

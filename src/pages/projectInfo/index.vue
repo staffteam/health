@@ -44,7 +44,7 @@ export default {
           console.log("扫码数据为：", res.result);
           let _code = res.result;
           var arr = res.result.split("/");
-          if (_code.indexOf("https://old.szyinghe.net/upload/") >= 0) {
+          if (_code.indexOf("https://old.szyinghe.net/upload/") >= 0 || _code.indexOf("https://health.mhcamo.com/upload/") >= 0) {
             mpvue.showLoading({
               title: "請稍等"
             });

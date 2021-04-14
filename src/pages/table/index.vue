@@ -416,14 +416,7 @@ export default {
 
     determine: function(e) {
       //确认筛选事件
-
-      console.log(
-        "品牌 分类  阶段 " +
-          this.brandvalue +
-          this.classificationvalue +
-          this.brandvalue
-      ),
-        (this.animationShow = false);
+      this.animationShow = false
       setTimeout(_ => {
         this.show = false;
       }, 200);
